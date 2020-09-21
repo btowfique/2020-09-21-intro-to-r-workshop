@@ -253,11 +253,11 @@ class(decimal_number)
 #   class(thing)
 #
 # What will happen in each of these examples?
-#
-#   num_char <- c(1, 2, 3, "a")
-#   num_logical <- c(1, 2, 3, TRUE)
-#   char_logical <- c("a", "b", "c", TRUE)
-#   tricky <- c(1, 2, 3, "4")
+
+  num_char <- c(1, 2, 3, "a")
+  num_logical <- c(1, 2, 3, TRUE)
+  char_logical <- c("a", "b", "c", TRUE)
+  tricky <- c(1, 2, 3, "4")
 #
 # [Hint: use class() to check the data type of your objects]
 #
@@ -306,12 +306,12 @@ animals[animals %in% c("rat", "cat", "dog", "duck", "goat")]
 #
 # Can you explain  why 
 #
-#  "four" > "five" 
+ "four" > "five"
 #
 # returns TRUE?
 #
 # Answer:
-
+because "they are evaluated as characters and alphabetically"
 
 # Topic: Missing data (NA - Not Available)
 
@@ -332,13 +332,14 @@ heights[complete.cases(heights)]
 # Using this vector of heights in inches, create a new vector 
 # with the NAs removed.
 # 
-#   heights <- c(63, 69, 60, 65, NA, 68, 61, 70, 61, 59, 64, 69, 63, 63, NA, 72, 65, 64, 70, 63, 65)
+  heights <- c(63, 69, 60, 65, NA, 68, 61, 70, 61, 59, 64, 69, 63, 63, NA, 72, 65, 64, 70, 63, 65)
 #
 # Solution
-
+na.omit(heights)
 # Use the function median() to calculate the median of the heights vector.
 #
 # Solution
+median(na.omit(heights))
 
 # Use R to figure out how many people in the set are taller than 67 inches.
 #
