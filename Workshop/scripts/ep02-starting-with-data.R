@@ -20,20 +20,23 @@ surveys <- read.csv("data_raw/portal_data_joined.csv")
 
 # and take a look at it
 
-
+surveys
 
 # BTW, we assumed our data was comma separated, however this might not
 # always be the case. So we may been to tell read.csv more about our file.
 
-
+head(surveys)
+View(surveys)
 
 # So what kind of an R object is "surveys" ?
-
+class(surveys)
 
 
 # ok - so what are dataframes ?
-
-
+str(surveys)
+head (surveys)
+nrow(surveys)
+ncol(surveys)
 
 # --------
 # Exercise
@@ -42,35 +45,44 @@ surveys <- read.csv("data_raw/portal_data_joined.csv")
 # What is the class of the object surveys?
 #
 # Answer:
-
+Data.frame
 
 # How many rows and how many columns are in this survey ?
-#
 # Answer:
+row 34786
+cols 13 
+names(surveys)
+rownames(surveys)
 
 # What's the average weight of survey animals
-#
-#
+summary(surveys)
+42.67
+
 # Answer:
 
 # Are there more Birds than Rodents ?
-#
+
+summary(surveys)
+No. Bird 450, Rodent 34247
 #
 # Answer:
 
 
 # 
 # Topic: Sub-setting
-#
+surveys[1,1]
 
 # first element in the first column of the data frame (as a vector)
+surveys[1,1]
 
 
 # first element in the 6th column (as a vector)
 
+surveys[1,6]
 
 # first column of the data frame (as a vector)
 
+surveys[,6]
 
 # first column of the data frame (as a data frame)
 
