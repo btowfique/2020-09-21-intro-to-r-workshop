@@ -31,20 +31,36 @@ download.file(url = "https://ndownloader.figshare.com/files/2292169",
 #------------------
 # Lets get started!
 #------------------
+install.packages("tidyverse") 
+library(tidyverse) # load the library 'tidyverse'
 
+# dplyr used to manipulate data
+# tidyr used for reshaping data
 
+# Load the dataset
+surveys <- read_csv("data_raw/portal_data_joined.csv")
 
+# Check structure
+str(surveys)
 
-
+#---------------
 
 #-----------------------------------
 # Selecting columns & filtering rows
 #-----------------------------------
 
+# selects columns plot_id, species_id and weight from data 'surveys'
+select(surveys, plot_id, species_id, weight) 
 
+# selects all columns except record_id and species_id
+select(surveys, -record_id, -species_id) 
 
+# Filter for a particular year
+surveys_1995 <- filter(surveys, year == 1995)
 
-
+surveys2 <- filter(surveys, weight < 5)
+surveys_sml <- select(surveys2, species_id, sex, weight)
+surveys_sml <- select(filter(surveys, weight < 5), species_id, sex, weight)
 
 
 #-------
@@ -63,16 +79,32 @@ download.file(url = "https://ndownloader.figshare.com/files/2292169",
 # Using pipes, subset the ```surveys``` data to include animals collected before 1995 and 
 # retain only the columns ```year```, ```sex```, and ```weight```.
 
+surveys_1995 <- surveys %>% 
+  filter(year < 1995) %>% 
+  # ordering your columns does matter. If you put weight second, it will be in the second column
+  select(year, sex, weight)
+
 
 
 
 
 #--------
-# Mutate
+# Mutate : to convert one column to another column
 #--------
+surveys_weight <- surveys %>%
+  mutate(weight_kg=weight/1000,
+         weight_lb=weight_kg*2.2)
+  
 
-
-
+surveys %>%
+  mutate(weight_kg=weight/1000,
+         weight_lb=weight_kg*2.2)
+  head(surveys)
+  
+surveys%>%
+  filter(!is.na(weight))%>%
+  mutate(weight_kg=weight/1000)%>%
+  head(20)
 
 
 
@@ -87,7 +119,37 @@ download.file(url = "https://ndownloader.figshare.com/files/2292169",
 
 # Hint: think about how the commands should be ordered to produce this data frame!
 
+#My solution
+surveys_hindfoot <- surveys %>%
+  select(surveys, species_id)
+  mutate(hindfoot_cm=hindfoot_length/10)
+  
+surveys_hindfoot %>%
+  (!is.na(hindfoot_cm))%>%
 
+#solution 1  
+  new_dataframe <- surveys %>% 
+  filter(!is.na(hindfoot_length)) %>% 
+  mutate(hindfoot_cm = hindfoot_length / 10) %>% 
+  select(species_id, hindfoot_cm) %>% 
+  filter(hindfoot_cm < 3)
+
+#solution 2
+surveys %>%  
+  filter(!is.na(hindfoot_length)) %>%  
+  mutate(hindfoot_cm = hindfoot_length / 10) %>% 
+  filter(hindfoot_cm < 3) %>% 
+  select(species_id, hindfoot_cm)
+
+#solution 3
+new_dataframe <- surveys %>% 
+  filter(!is.na(hindfoot_length), hindfoot_length < 30) %>% 
+  mutate(hindfoot_cm = hindfoot_length / 10) %>% 
+  select(species_id, hindfoot_cm)
+
+
+  
+  
 
 
 
