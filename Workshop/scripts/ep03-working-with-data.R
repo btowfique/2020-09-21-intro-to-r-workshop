@@ -156,11 +156,84 @@ new_dataframe <- surveys %>%
 #---------------------
 # Split-apply-combine
 #---------------------
+#Solution
+surveys %>%
+  group_by (sex) %>%
+  summarise(mean_weight=mean(weight, na.rm = TRUE))
+
+  summary(surveys)
+  
+# Using dplyr - not sure what this is
+surveys %>%
+    dplyr:: group_by(sex) %>%
+    summarise(mean_weight=mean(weight, na.rm = TRUE))
+
+#Another solution 
+surveys %>%
+  filter(!is.na(weight))%>%
+  group_by (sex, species_id) %>%
+  summarise(mean_weight=mean(weight))
+
+# Solution to filter out NA from both weight n Sex
+surveys %>%
+  filter(!is.na(weight),!is.na(sex))%>%
+  group_by (sex, species_id) %>%
+  summarise(mean_weight=mean(weight))
+
+# For asking for a certain number of rows
+surveys %>%
+  filter(!is.na(weight),!is.na(sex))%>%
+  group_by (sex, species_id) %>%
+  summarise(mean_weight=mean(weight)) %>%
+  print(n=20)
+  
+#to order the data by min weight
+surveys %>%
+  filter(!is.na(weight),!is.na(sex))%>%
+  group_by (sex, species_id) %>%
+  summarise(mean_weight=mean(weight),
+            min_weight=min(weight))%>%
+  arrange(min_weight)
 
 
 
+#to order the data by mean weight
+surveys %>%
+  filter(!is.na(weight),!is.na(sex))%>%
+  group_by (sex, species_id) %>%
+  summarise(mean_weight=mean(weight),
+            min_weight=min(weight))%>%
+  arrange(mean_weight)
 
+#to order the data by max weight
+surveys %>%
+  filter(!is.na(weight),!is.na(sex))%>%
+  group_by (sex, species_id) %>%
+  summarise(mean_weight=mean(weight),
+            min_weight=min(weight))%>%
+  arrange(-min_weight)
 
+#to order the data by max weight
+surveys %>%
+  filter(!is.na(weight),!is.na(sex))%>%
+  group_by (sex, species_id) %>%
+  summarise(mean_weight=mean(weight),
+            min_weight=min(weight))%>%
+  arrange(desc(min_weight))
+
+#to count
+surveys %>%
+  count(sex)
+
+# Alternate solution  
+surveys %>%
+  group_by(sex) %>%
+  summarise(count=n())
+
+#group by several variables
+surveys %>%
+  group_by(sex, species, taxa) %>%
+  summarise(count=n())
 
 #-----------
 # CHALLENGE
@@ -168,12 +241,37 @@ new_dataframe <- surveys %>%
 
 # 1. How many animals were caught in each ```plot_type``` surveyed?
 
+# My solution
+surveys %>%
+  count(plot_type)
+
+
 # 2. Use ```group_by()``` and ```summarize()``` to find the mean, min, and max hindfoot length 
 #    for each species (using ```species_id```). Also add the number of observations 
 #    (hint: see ```?n```).
 
+
+# solution
+  hindfoot_info <- surveys %>%
+    filter(!is.na(hindfoot_length)) %>% 
+    group_by(species_id) %>% 
+    summarise(mean_length = mean(hindfoot_length),
+              min_length = min(hindfoot_length), 
+              max_length = max(hindfoot_length),
+              count = n())
+  
+  
 # 3. What was the heaviest animal measured in each year? 
 #    Return the columns ```year```, ```genus```, ```species_id```, and ```weight```.
+
+  
+#Solution
+  heaviest_year <- surveys %>% 
+    group_by(year) %>%
+    select(year, genus, species_id, weight) %>%  
+    mutate(max_weight=max(weight, na.rm = TRUE)) %>%
+    ungroup
+heaviest_year
 
 
 
