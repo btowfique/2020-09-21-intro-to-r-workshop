@@ -273,6 +273,14 @@ surveys %>%
     ungroup
 heaviest_year
 
+#Another solution
+surveys %>% 
+  filter(!is.na(weight)) %>%
+  group_by(year) %>%
+  filter(weight == max(weight)) %>% 
+  select(year, genus, species, weight) %>%
+  arrange(year) %>% 
+  distinct()
 
 
 
@@ -282,7 +290,19 @@ heaviest_year
 #-----------
 
 
+surveys.gw <- surveys%>%
+  filter(!is.na(weight))%>%
+  group_by(plot_id, genus)%>%
+  summarise(mean_weight=mean(weight))
+surveys.gw
+          
+surveys_wider <- surveys.gw %>%
+  spread(key=genus, value=mean_weight)
+str(surveys_wider)
+surveys_wider
 
+surveys_gather <- (surveys_wider)%>%
+  gather (key=genus, value = mean_weight, -plot_id)
 
 
 
@@ -296,7 +316,19 @@ heaviest_year
 #    and use the function n_distinct() to get the number of unique genera within a particular chunk of data. 
 #    It’s a powerful function! See ?n_distinct for more.
 
+
+surveys_spread_genera <- surveys %>% 
+  group_by(plot_id, year) %>% 
+  summarise(n_genera = n_distinct(genus)) %>% 
+  spread(year, n_genera)
+
+head(surveys_spread_genera)
+
+
 # 2. Now take that data frame and pivot_longer() it again, so each row is a unique plot_id by year combination.
+
+surveys_spread_genera2 <- surveys_spread_genera %>% 
+  gather(key = year, value = n_genera, -plot_id)
 
 # 3. The surveys data set has two measurement columns: hindfoot_length and weight. 
 #    This makes it difficult to do things like look at the relationship between mean values of each 
@@ -305,9 +337,24 @@ heaviest_year
 #    takes on the value of either hindfoot_length or weight. 
 #    Hint: You’ll need to specify which columns are being pivoted.
 
+
+surveys_long <- surveys %>% 
+  gather("measurement", "value", hindfoot_length, weight)
+
+
+
+
 # 4. With this new data set, calculate the average of each measurement in each year for each different plot_type. 
 #    Then pivot_wider() them into a data set with a column for hindfoot_length and weight. 
 #    Hint: You only need to specify the key and value columns for pivot_wider().
+
+
+surveys_long2 <- surveys_long %>% 
+  group_by(year, measurement, plot_type) %>% 
+  summarise(mean_value = mean(value, na.rm = TRUE)) %>% 
+  spread(measurement, mean_value)
+
+tail(surveys_long2)
 
 
 
